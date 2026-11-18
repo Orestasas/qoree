@@ -1,0 +1,61 @@
+<!doctype html>
+<!--
+  qoree @@VERSION@@ · a self-custodial Qubic wallet in one HTML file
+  Not independently audited. Keep a written backup of every seed.
+
+  WHAT IT DOES
+    Seeds are made, kept and used only in this page. Signing uses the official Qubic TypeScript SDK, and each
+    transfer is decoded and checked against what you confirmed before it is sent. The wallet lives in this tab's
+    memory unless you save it, encrypted with your password (Argon2id, then AES-256-GCM). A transfer shows as
+    done only once the network archive confirms it.
+
+  HOSTING IT
+    Serve this file alone, as index.html, over HTTPS from an address used for nothing else: any other page
+    served there could read the saved wallet. Publish each release's SHA-256, and send these headers:
+        Content-Security-Policy: frame-ancestors 'none'
+        Strict-Transport-Security: max-age=31536000
+        X-Content-Type-Options: nosniff
+        Referrer-Policy: no-referrer
+        Cross-Origin-Opener-Policy: same-origin
+        Cache-Control: no-cache
+    On your own computer, serve its folder on 127.0.0.1 only:
+        python3 -m http.server <port> --bind 127.0.0.1 --directory <folder>
+
+  NETWORK (the Content-Security-Policy below blocks every other host)
+    rpc.qubic.org        balances, history, broadcasting, price
+    api.coingecko.com    prices, charts, 24h change
+    api.gateio.ws        older prices, order books, exchange status
+    api.mexc.com         order books
+    static.qubic.org     contract and exchange names
+    Everything but rpc.qubic.org can be turned off in Settings → Network & data; order books are off until
+    you turn them on. Only addresses and signed transactions are sent: seeds, keys and passwords never are.
+
+  LIMITS
+    A software wallet, not an isolated signer: a browser extension allowed on this page can read seeds, so
+    use a browser profile without extensions for funds. No asset transfers, contract calls or hardware
+    wallets yet.
+
+  BUILD
+    Built from src/ with ./build.sh, which pins this page's script and styles in its CSP: edit the source,
+    not this file. The full notes (security model, hosting details) are in the project's docs/SECURITY.md.
+    Embedded unmodified, with their licences at the start of the script: the Qubic TypeScript SDK (Qubic
+    Anti-Military License), @noble/hashes and Project Nayuki's QR Code generator (MIT). Fonts: Geist and
+    Geist Mono (SIL Open Font License 1.1). Exchange logos are their owners' trademarks.
+-->
+<html lang="en" data-theme="dark" data-accent="blue">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="@@CSP@@">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#171412">
+<meta name="robots" content="noindex, nofollow">
+<meta name="format-detection" content="telephone=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="qoree">
+<meta name="description" content="qoree is a self-custodial Qubic wallet that runs entirely in your browser.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%230D42FF'/%3E%3Cpath transform='translate(13.568 13.630) scale(1.2329)' fill='%23FFFFFF' fill-rule='evenodd' d='M0.34668 0.300049C7.77995 0.300049 13.8059 6.32597 13.8059 13.7592H0.34668V0.300049ZM16.089 13.7592C16.089 6.32597 22.1149 0.300049 29.5482 0.300049V13.7592H16.089ZM13.8059 29.5016C6.3726 29.5016 0.34668 23.4756 0.34668 16.0424H5.47938C5.47938 20.6392 9.20909 24.3689 13.8059 24.3689V29.5016ZM29.5482 16.0424C29.5482 23.4756 23.5223 29.5016 16.089 29.5016V24.3689C20.6858 24.3689 24.4155 20.6392 24.4155 16.0424H29.5482Z'/%3E%3C/svg%3E">
+<title>qoree · Qubic wallet</title>

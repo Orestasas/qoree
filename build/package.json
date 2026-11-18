@@ -1,0 +1,1 @@
+{"name":"qw-build","private":true,"type":"module","dependencies":{"@noble/hashes":"2.4.0","@qubic-lib/qubic-ts-library":"0.1.6","@qubic.org/crypto":"1.0.0","@qubic.org/tx":"1.0.0","@qubic.org/types":"1.0.0","esbuild":"0.25.10"}}

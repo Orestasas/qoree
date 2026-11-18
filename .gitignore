@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+__pycache__/
+
+# Written by build.sh, test.sh and build-cloudflare.sh
+lint/app.js
+lint/script.js
+tests/logs/
+cloudflare-assets/
+release/

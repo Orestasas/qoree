@@ -1,0 +1,67 @@
+# On every push and pull request: the two embedded libraries rebuild byte for byte from their pinned sources, index.html
+# rebuilds byte for byte from src/ (build.sh also lints the app and type-checks src/js with tsc), and every offline
+# suite passes. The fault proof (tests/prove-failures.sh, about an hour) runs weekly and on demand. Actions are pinned
+# to commits; dependencies install with their install scripts off.
+name: checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 4 * * 1'
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+      - name: zsh (the scripts' shell)
+        run: sudo apt-get update -q && sudo apt-get install -y -q zsh
+      - name: Dependencies, install scripts off
+        run: for d in build lint qrtest; do (cd "$d" && npm ci --ignore-scripts --no-audit --no-fund); done
+      - name: The embedded libraries rebuild from their pinned sources
+        run: ./build/vendor.sh
+      - name: index.html rebuilds byte for byte from src/; lint and tsc pass
+        run: ./build.sh && git diff --exit-code -- index.html
+      - name: The official web wallet the message-signing suite compares with (pinned)
+        run: |
+          git init -q research/wallet-src/repo
+          git -C research/wallet-src/repo fetch -q --depth 1 https://github.com/qubic/wallet d551ab0d961921bb500242bbb4a51d0ec33a80a9
+          git -C research/wallet-src/repo checkout -q FETCH_HEAD
+      - name: Offline suites
+        run: ./test.sh
+      - name: Logs of the suites that failed
+        if: failure()
+        run: for f in tests/logs/*.log; do grep -q -E '^(FAIL|HARNESS)' "$f" && { echo "== $f"; cat "$f"; }; done; true
+
+  fault-proof:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+      - name: zsh (the scripts' shell)
+        run: sudo apt-get update -q && sudo apt-get install -y -q zsh
+      - name: Dependencies, install scripts off
+        run: for d in build lint qrtest; do (cd "$d" && npm ci --ignore-scripts --no-audit --no-fund); done
+      - name: The official web wallet the message-signing suite compares with (pinned)
+        run: |
+          git init -q research/wallet-src/repo
+          git -C research/wallet-src/repo fetch -q --depth 1 https://github.com/qubic/wallet d551ab0d961921bb500242bbb4a51d0ec33a80a9
+          git -C research/wallet-src/repo checkout -q FETCH_HEAD
+      - name: Every planted fault makes its suite fail
+        run: ./build.sh && ./tests/prove-failures.sh
