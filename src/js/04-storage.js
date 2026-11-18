@@ -6,7 +6,7 @@
 // A saved setting is kept only when it is one of its allowed values (switches: a boolean).
 /** @type {Record<string, readonly unknown[]>} */
 const PREF_CHOICES = { lang: LANGUAGES.map((l) => l.id), theme: ['dark', 'light', 'system'], grays: ['warm', 'neutral'], heroUnit: ['usd', 'qubic'], priceUnit: ['unit', 'billion'], tickOffset: TICK_OFFSETS, autoLockMinutes: AUTO_LOCK_CHOICES };
-const PREF_SWITCHES = ['privacy', 'marketData', 'labels', 'orderBooks', 'exchangeStatus', 'resumeOnReload', 'activityFiltersOpen'];
+const PREF_SWITCHES = ['privacy', 'marketData', 'labels', 'orderBooks', 'bpp', 'exchangeStatus', 'resumeOnReload', 'activityFiltersOpen'];
 const Prefs = {
   load() {
     let raw = null;

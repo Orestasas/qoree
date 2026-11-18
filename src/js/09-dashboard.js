@@ -655,12 +655,13 @@ function renderMarket(el) {
 }
 
 // Under Market, one row per tool (its coloured icon square and name; what it does on hover): the price calculator,
-// order books, address book and signed messages. Signing needs a seed, so it's offered only when the account on screen
+// order books, BPP-9000's calls, address book and signed messages. Signing needs a seed, so it's offered only when the account on screen
 // has one (with All accounts, when any does); a watch-only account can't sign, and isn't stood in for.
 const toolRow = (iconName, tone, label, onClick, hint) => h('button', { type: 'button', class: 'item', title: hint, onClick },
   h('span', { class: ['tool-icon', tone], 'aria-hidden': 'true' }, icon(iconName, 20)),
   h('span', { class: 'item-main' }, h('span', { class: 'item-title', text: label })));
-// The tools: how many addresses are saved, whether the account in view can sign (wallet), and the settings (order books).
+// The tools: how many addresses are saved, whether the account in view can sign (wallet), and the settings (order books,
+// BPP-9000).
 function toolkitKey() {
   return [versions.wallet, versions.prefs].join('|');
 }
@@ -673,6 +674,7 @@ function renderToolkit(el) {
     h('div', { class: 'group' },
       toolRow('calculatorFill', 'orange', tr('Price calculator'), openWhatIfSheet, tr('Your balance at any QUBIC price')),
       toolRow('bookFill', 'blue', tr('Order books'), openOrderBooks, state.prefs.orderBooks ? tr('QUBIC/USDT on Gate.io and MEXC') : tr('QUBIC/USDT on Gate.io and MEXC (off until you turn it on)')),
+      toolRow('gridFill', 'indigo', tr('BPP-9000 calls'), openBpp, state.prefs.bpp ? tr('How often Qubic’s network calls Bitcoin’s next hour') : tr('How often Qubic’s network calls Bitcoin’s next hour (off until you turn it on)')),
       toolRow('addressBookFill', 'green', tr('Address book'), openAddressBook, saved ? tr('{count, plural, one {# saved address} other {# saved addresses}}', { count: saved }) : tr('Exchange deposit addresses, friends')),
       signing ? toolRow('signFill', 'purple', tr('Sign a message'), openSignMessage, tr('Prove that you control an address')) : null,
       toolRow('verifyFill', 'teal', tr('Verify a message'), openVerifyMessage, tr('Check a signed message from anyone'))),

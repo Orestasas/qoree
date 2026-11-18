@@ -170,7 +170,7 @@ const settle = () => new Promise((r) => setTimeout(r, 50));
   // The rest of the policy, exactly: nothing loosened (an 'unsafe-' source, a wildcard, another host, Trusted Types
   // dropped), the one style block pinned, and every host it allows listed in docs/SECURITY.md.
   const policy = Object.fromEntries(csp.split(';').map((d) => d.trim().split(/\s+/)).filter((d) => d[0]).map(([name, ...v]) => [name, v.join(' ')]));
-  const hosts = ['https://rpc.qubic.org', 'https://api.coingecko.com', 'https://api.gateio.ws', 'https://api.mexc.com', 'https://static.qubic.org'];
+  const hosts = ['https://rpc.qubic.org', 'https://api.coingecko.com', 'https://api.gateio.ws', 'https://api.mexc.com', 'https://static.qubic.org', 'https://annexplorer.jetskipool.ai'];
   if (fault('csp-shape')) hosts.push('https://example.com');
   const styles = [...html.matchAll(/<style>(.*?)<\/style>/gs)].map((m) => m[1]);
   const expected = { 'default-src': "'none'", 'script-src': scriptSrc.join(' '), 'style-src': styles.length === 1 ? pin(styles[0]) : 'one style block',

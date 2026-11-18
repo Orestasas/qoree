@@ -13,6 +13,7 @@ It hasn't been audited. Write down every seed, and keep large amounts on a hardw
 - Warnings for look-alike addresses
 - Encrypted storage (Argon2id, AES-256-GCM) and encrypted backup files
 - Optional market data, exchange status and order books
+- BPP-9000 tracker: how often Qubic's network calls Bitcoin's next hour (off until you turn it on)
 - English, Arabic, French, Hindi, Spanish and Chinese
 
 ## Run it locally

@@ -143,7 +143,7 @@ csp = "; ".join(
         f"style-src {sha(style_block)}",
         "font-src data:",
         "img-src data:",
-        "connect-src https://rpc.qubic.org https://api.coingecko.com https://api.gateio.ws https://api.mexc.com https://static.qubic.org",
+        "connect-src https://rpc.qubic.org https://api.coingecko.com https://api.gateio.ws https://api.mexc.com https://static.qubic.org https://annexplorer.jetskipool.ai",
         "base-uri 'none'",
         "form-action 'none'",
         "object-src 'none'",

@@ -118,7 +118,7 @@
   --bg-behind: #cfcbc8;
   /* Activity and Tools icon colours (iOS system colours; light values here, dark below). Not semantic tokens: the
      design system has none for this. */
-  --ic-in: #34c759; --ic-out: #0088ff; --ic-move: #00c3d0; --ic-call: #cb30e0; --ic-orange: #ff8d28;
+  --ic-in: #34c759; --ic-out: #0088ff; --ic-move: #00c3d0; --ic-call: #cb30e0; --ic-orange: #ff8d28; --ic-indigo: #5856d6;
 
   /* ---- Safe areas and motion ---- */
   --st: env(safe-area-inset-top, 0px);
@@ -177,7 +177,7 @@
   --shadow-button: inset 0 -4px 5px rgba(255, 255, 255, 0.05), inset 0 -1px 1px rgba(255, 255, 255, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.15), inset 0 4px 5px rgba(255, 255, 255, 0.05), 0 8px 15px rgba(0, 0, 0, 0.02);
   --shadow-primary: inset 0 1px 1px rgba(255, 255, 255, 0.3), inset 0 -1px 1px rgba(255, 255, 255, 0.14), inset 0 -3px 5px rgba(255, 255, 255, 0.1);
   --bg-behind: #050404;
-  --ic-in: #30d158; --ic-out: #0091ff; --ic-move: #00d2e0; --ic-call: #db34f2; --ic-orange: #ff9230;
+  --ic-in: #30d158; --ic-out: #0091ff; --ic-move: #00d2e0; --ic-call: #db34f2; --ic-orange: #ff9230; --ic-indigo: #6e6cf0;
   --shadow-float: 0 24px 48px rgba(0, 0, 0, 0.45);
   color-scheme: dark;
 }
@@ -589,6 +589,7 @@ button.row:active { background: var(--bg-pressed-overlay); }
 .badge.err { background: var(--bg-error-subtle); color: var(--text-error); }
 .badge.warn { background: var(--bg-warning-subtle); color: var(--text-warning); }
 .badge.accent { background: var(--bg-brand-subtle); color: var(--text-brand); }
+.badge.top { background: var(--bg-brand); color: var(--text-on-brand); }
 
 /* notice: tone surface, icon + title row, body, one full-width 44px action (Notice v2) */
 .notice {
@@ -674,6 +675,21 @@ button.row:active { background: var(--bg-pressed-overlay); }
    display headline over a short lead, the three ways in (Create on a row of its own, Import and Watch side by side
    under it), and three plain points */
 .screen.welcome { max-width: 1040px; align-items: center; text-align: center; padding-top: calc(var(--st) + 56px); padding-bottom: calc(var(--sb) + 40px); }
+/* the welcome backdrop: a soft brand-colour light from the top edge and a fainter one from the bottom, with a little
+   grain so the gradient doesn't band; fixed to the viewport and kept behind the column by isolating the screen */
+.screen.welcome { position: relative; isolation: isolate; --glow: 45%; }
+:root[data-theme="light"] .screen.welcome { --glow: 16%; }
+.screen.welcome::before, .screen.welcome::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+.screen.welcome::before {
+  background:
+    radial-gradient(max(60vw, 480px) 50vh at 50% 0%, color-mix(in srgb, var(--brand-fill) var(--glow), transparent), transparent 70%),
+    radial-gradient(max(40vw, 360px) 35vh at 50% 100%, color-mix(in srgb, var(--brand-fill) calc(var(--glow) / 2), transparent), transparent 70%);
+}
+.screen.welcome::after {
+  opacity: 0.12;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+:root[data-theme="light"] .screen.welcome::after { opacity: 0; }
 .welcome-hero { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--spacing-10) 0; }
 .welcome-title { font-size: clamp(32px, 6.4vw, 72px); line-height: 1; font-weight: 700; letter-spacing: -0.045em; }
 .welcome-title > span { display: block; text-wrap: balance; }
@@ -928,6 +944,7 @@ button.hero-value:active { transform: scale(0.97); transition-duration: 60ms, 0m
 .tool-icon.green { --icc: var(--ic-in); }
 .tool-icon.purple { --icc: var(--ic-call); }
 .tool-icon.teal { --icc: var(--ic-move); }
+.tool-icon.indigo { --icc: var(--ic-indigo); }
 
 /* Order books: a tile per exchange (bid in green, ask in red, spread), then the picked book's levels with running-total
    bars drawn from the right. */
@@ -953,6 +970,53 @@ button.hero-value:active { transform: scale(0.97); transition-duration: 60ms, 0m
 .book-controls-label { flex-shrink: 0; font-size: 13px; line-height: 18px; color: var(--text-secondary); }
 .book-controls .segmented { flex: 1; }
 .book-mid { padding: var(--spacing-1) var(--spacing-4); font-size: 12px; line-height: 18px; color: var(--text-secondary); text-align: center; }
+/* BPP-9000: the score, then one dot per hour (green right, red wrong, grey no call; fainter with fewer voters), the
+   hour picked, and the guide's legend and ladder */
+.bpp-score, .bpp-card { display: flex; flex-direction: column; gap: var(--spacing-3); padding: var(--spacing-4); border-radius: var(--radius-4xl); background: var(--bg-surface); border: 1px solid var(--border-default); box-shadow: var(--lift); min-width: 0; }
+.bpp-score-top { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--spacing-3); }
+.bpp-score-main { display: flex; flex-direction: column; gap: var(--spacing-1); min-width: 0; }
+.bpp-score .stat-k { color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.bpp-rate { font-size: 40px; line-height: 44px; font-weight: 600; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.bpp-score-top .badge { flex-shrink: 0; margin-bottom: 6px; }
+.bpp-why { font-size: 13px; line-height: 18px; color: var(--text-secondary); text-wrap: pretty; }
+.bpp-card-title { font-size: 15px; line-height: 20px; font-weight: 500; letter-spacing: -0.02em; }
+.bpp-controls { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-3); }
+.bpp-controls .segmented { width: 152px; flex-shrink: 0; }
+.bpp-period { display: flex; align-items: center; gap: var(--spacing-1); min-width: 0; font-size: 13px; line-height: 18px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.bpp-period > span { margin-inline-end: var(--spacing-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bpp-step { width: 32px; height: 32px; border-radius: var(--radius-full); background: var(--bg-element); color: var(--text-primary); }
+.bpp-step .nc-icon { width: 16px; height: 16px; }
+.bpp-step[disabled] { color: var(--text-tertiary); }
+.bpp-grid { display: grid; gap: 3px; grid-template-columns: repeat(24, minmax(0, 1fr)); padding: 2px; border-radius: var(--radius-md); touch-action: pan-y; cursor: pointer; }
+.bpp-grid.day { gap: 6px; grid-template-columns: repeat(12, minmax(0, 1fr)); }
+.bpp-grid:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 4px; }
+.bpp-dot { aspect-ratio: 1; border-radius: 50%; background: var(--bg-element); }
+.bpp-dot.solid { --p: 100%; }
+.bpp-dot.right { background: color-mix(in srgb, var(--status-success) var(--p, 100%), transparent); }
+.bpp-dot.wrong { background: color-mix(in srgb, var(--status-error) var(--p, 100%), transparent); }
+.bpp-dot.quiet { background: color-mix(in srgb, var(--text-tertiary) 60%, transparent); }
+.bpp-dot.on { outline: 2px solid var(--text-primary); outline-offset: 1px; }
+.bpp-hint { padding-top: var(--spacing-3); border-top: 1px solid var(--border-default); font-size: 13px; line-height: 18px; color: var(--text-tertiary); }
+.bpp-hour { display: flex; flex-direction: column; gap: var(--spacing-1); padding-top: var(--spacing-3); border-top: 1px solid var(--border-default); }
+.bpp-hour-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--spacing-3); }
+.bpp-hour-when { display: flex; flex-direction: column; font-variant-numeric: tabular-nums; }
+.bpp-hour-when b { font-size: 15px; line-height: 20px; font-weight: 500; letter-spacing: -0.02em; }
+.bpp-hour-when span { font-size: 13px; line-height: 18px; color: var(--text-secondary); }
+.bpp-hour .kv-row { padding: var(--spacing-2) 0; min-height: 0; font-size: 13px; line-height: 18px; font-variant-numeric: tabular-nums; }
+.bpp-key { display: flex; flex-direction: column; gap: var(--spacing-3); font-size: 15px; line-height: 20px; color: var(--text-secondary); }
+.bpp-key-row { display: flex; align-items: flex-start; gap: var(--spacing-3); }
+.bpp-key-row b { font-weight: 500; color: var(--text-primary); }
+.bpp-key .bpp-dot, .bpp-fade .bpp-dot { flex: none; width: 12px; margin-top: 4px; }
+.bpp-fade { display: flex; gap: var(--spacing-5); }
+.bpp-fade > span { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-1); font-size: 12px; line-height: 16px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.bpp-fade .bpp-dot { margin-top: 0; }
+.bpp-ladder { gap: var(--spacing-5); }
+.bpp-rung { display: grid; grid-template-columns: 88px minmax(0, 1fr); column-gap: var(--spacing-3); align-items: start; }
+.bpp-rung-pct { font-size: 36px; line-height: 40px; font-weight: 600; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.bpp-rung.base .bpp-rung-pct { color: var(--text-tertiary); }
+.bpp-rung-text { display: flex; flex-direction: column; align-items: flex-start; gap: var(--spacing-1); padding-top: 3px; }
+.bpp-rung-text p { font-size: 13px; line-height: 18px; color: var(--text-secondary); }
+.fine a { color: var(--text-secondary); text-decoration: underline; text-underline-offset: 2px; }
 
 /* Price calculator sheet */
 .calc-hero { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-1); padding: var(--spacing-2) 0 var(--spacing-6); text-align: center; }

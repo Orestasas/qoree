@@ -482,6 +482,30 @@ async function fetchExchangeStatus(id) {
   return src.parse(await request(src.url, { retries: 1, timeout: 8000 }));
 }
 
+// ── BPP-9000 calls (opt-in) ─────────────────────────────────────────────────
+// The newest epoch the explorer knows, and one epoch's closed hours since go-live: the votes up, down and not sure,
+// the explorer's status (correct, incorrect, no consensus, or not scored while it's a test), and what Bitcoin did
+// (1 up, 0 down, null not known yet). Also the bar for an official call: how many voters, and what share on one side.
+async function fetchBppLatest() {
+  const d = await request(BPP_API.epochs, { retries: 1, timeout: 15000 });
+  const epochs = Array.isArray(d?.items) ? d.items.map((x) => x?.epoch).filter(isUint) : [];
+  if (!epochs.length) throw invalid();
+  return Math.max(...epochs);
+}
+async function fetchBppEpoch(epoch, now) {
+  const a = (await request(BPP_API.overview(epoch), { retries: 1, timeout: 15000 }))?.hypotheticalAccuracy;
+  if (!a || !Array.isArray(a.hours)) throw invalid();
+  const hours = [];
+  for (const x of a.hours) {
+    if (!x || x.status === 'waiting' || !isUint(x.targetUnix) || x.targetUnix < BPP_FIRST_HOUR || x.targetUnix > now) continue;
+    hours.push({ t: x.targetUnix, e: epoch, up: uintOr0(x.up), down: uintOr0(x.down), unsure: uintOr0(x.unknown),
+      s: typeof x.status === 'string' ? x.status.toLowerCase() : '', went: x.expected === 0 || x.expected === 1 ? x.expected : null });
+  }
+  const needed = isUint(a.minimumComputors) && a.minimumComputors > 0 ? a.minimumComputors : null;
+  const agree = Number.isFinite(a.agreementPercent) && a.agreementPercent > 50 && a.agreementPercent <= 100 ? a.agreementPercent : null;
+  return { hours, needed, agree };
+}
+
 // ── Official labels (same static data the Qubic wallets use) ────────────────
 async function fetchLabels() {
   /** @type {Map<string, AddressLabel>} */

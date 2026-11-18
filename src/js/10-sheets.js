@@ -476,6 +476,7 @@ function networkDataPane(sheet, back, direction = 'forward') {
         if (v) loadLabels(); else { state.labels = new Map(); state.labelsLoaded = false; changed(); }
       }),
       switchItem('book', tr('Exchange order books'), tr('QUBIC/USDT books from Gate.io and MEXC, loaded only while you look at them (Tools → Order books). Those exchanges see this device’s IP address.'), state.prefs.orderBooks, (v) => setPref('orderBooks', v)),
+      switchItem('grid', tr('BPP-9000 calls'), tr('BPP-9000’s calls on Bitcoin’s next hour from the Jetski ANN Explorer, loaded only while you look at them (Tools → BPP-9000 calls). The explorer sees this device’s IP address.'), state.prefs.bpp, (v) => setPref('bpp', v)),
       switchItem('transfer', tr('Exchange status'), tr('A note when Gate.io pauses QUBIC deposits or withdrawals, checked every 10 minutes. Gate.io sees this device’s IP address.'), state.prefs.exchangeStatus, (v) => {
         setPref('exchangeStatus', v);
         if (v) loadExchangeStatus(); else { state.exchanges = { gate: null }; changed(); }

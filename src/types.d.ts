@@ -95,6 +95,7 @@ interface Prefs {
   marketData: boolean;
   labels: boolean;
   orderBooks: boolean;
+  bpp: boolean;
   exchangeStatus: boolean;
   tickOffset: number;
   autoLockMinutes: number;
