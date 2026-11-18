@@ -149,7 +149,7 @@ const DAY_MS = 86400000;
 const DONATION_ADDRESS = 'SCSGABTBOJFGTBFQVBFFWNYLHIRCXMIJUJMHSCFRVFHGYCBHMEVWEMCCHRUH';
 const TIP_USD = [5, 10, 25];
 // balances: the accounts on screen; otherBalances: the rest, which show only in lists that read them again on opening.
-const POLL_MS = { tick: 5000, tickFast: 2000, balances: 20000, otherBalances: 120000, history: 90000, price: 60000, chart: 600000, archive: 3000, exchanges: 600000 };
+const POLL_MS = { tick: 5000, tickFast: 2000, balances: 20000, otherBalances: 120000, history: 90000, price: 60000, chart: 600000, archive: 3000, exchanges: 600000, bpp: 300000 };
 const TIMEOUT_MS = 12000;
 // The largest response read from any server (a 1,000-transaction history page is about 0.5 MB): anything bigger is
 // refused while it streams in, before it can fill memory or stall the page.

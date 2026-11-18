@@ -924,7 +924,7 @@
   "A first sign, not proof: luck gets this far 1 time in 20. If it holds {rate}, it’s proven at about {calls} calls.": "إشارة أولى لا إثبات: يصل الحظ إلى هنا مرة من كل 20. إن ثبتت النتيجة عند {rate}، فستُثبت عند نحو {calls} توقعًا.",
   "A test run so far. Official calls start at {needed} voters an hour; the most so far is {most}.": "تجربة حتى الآن. تبدأ التوقعات الرسمية عند {needed} مصوّتًا في الساعة؛ والأكثر حتى الآن {most}.",
   "BPP-9000 calls": "توقعات BPP-9000",
-  "BPP-9000’s calls on Bitcoin’s next hour from the Jetski ANN Explorer, loaded only while you look at them (Tools → BPP-9000 calls). The explorer sees this device’s IP address.": "توقعات BPP-9000 للساعة التالية للبيتكوين من Jetski ANN Explorer، تُحمَّل فقط أثناء عرضها (الأدوات ← توقعات BPP-9000). يرى المستكشف عنوان IP لهذا الجهاز.",
+  "BPP-9000’s calls on Bitcoin’s next hour from the Jetski ANN Explorer, on the home screen and in Tools, refreshed every 5 minutes. The explorer sees this device’s IP address.": "توقعات BPP-9000 للساعة التالية للبيتكوين من Jetski ANN Explorer، في الشاشة الرئيسية وفي الأدوات، تُحدَّث كل 5 دقائق. يرى المستكشف عنوان IP لهذا الجهاز.",
   "Bitcoin": "البيتكوين",
   "Call": "التوقع",
   "Coin flip": "رمي عملة",

@@ -84,7 +84,7 @@ function changed() {
 // Redraw versions: each counts the changes to one kind of data and is moved where that data changes. A section is drawn
 // again when a version it reads has moved (see heroKey and the others in 09-dashboard.js). filters: Activity's kind,
 // search, order and how many it shows (09c-activity-view.js).
-const versions = { wallet: 0, balances: 0, assets: 0, history: 0, pending: 0, market: 0, net: 0, labels: 0, prefs: 0, filters: 0 };
+const versions = { wallet: 0, balances: 0, assets: 0, history: 0, pending: 0, market: 0, net: 0, labels: 0, prefs: 0, filters: 0, bpp: 0 };
 
 function setPref(key, value) {
   state.prefs = { ...state.prefs, [key]: value };
@@ -960,7 +960,44 @@ function priceInfo() {
   return null;
 }
 
-const due = { tick: 0, balances: 0, otherBalances: 0, history: 0, market: 0, chart: 0, labels: 0, exchanges: 0 };
+// ── BPP-9000's calls (see 10g-bpp.js) ───────────────────────────────────────
+// What's loaded since go-live: each epoch's closed hours, the bar for an official call, when it was last read, and
+// the last failure.
+const bpp = { epochs: new Map(), latest: 0, needed: 100, agree: 55, at: 0, err: null, loading: false };
+
+// What's known since go-live: every epoch's hours, an hour two epochs both report kept once (the one with more voters).
+async function loadBpp() {
+  const now = Math.floor(Date.now() / 1000);
+  const latest = await fetchBppLatest();
+  if (latest < BPP_FIRST_EPOCH) throw new NetError('invalid', trLater('The server sent data in an unexpected format.'));
+  const want = [];
+  for (let e = BPP_FIRST_EPOCH; e <= latest; e++) if (!bpp.epochs.get(e)?.done) want.push(e);
+  const got = await Promise.allSettled(want.map((e) => fetchBppEpoch(e, now)));
+  let failed = null;
+  got.forEach((g, i) => {
+    const e = want[i];
+    if (g.status === 'rejected') { failed = failed || g.reason; return; }
+    // Two epochs back is finished and settled.
+    bpp.epochs.set(e, { hours: g.value.hours, done: e < latest - 1 });
+    if (e === latest) { bpp.needed = g.value.needed || bpp.needed; bpp.agree = g.value.agree || bpp.agree; }
+  });
+  if (failed && got.every((g) => g.status === 'rejected')) throw failed;
+  bpp.latest = latest;
+  bpp.at = Date.now();
+}
+// Load, and tell whatever shows the calls (versions.bpp). One load at a time; a failure keeps what was loaded before.
+async function refreshBpp() {
+  if (!state.prefs.bpp || bpp.loading) return;
+  bpp.loading = true;
+  const alive = sessionGuard();
+  try { await loadBpp(); bpp.err = null; } catch (e) { bpp.err = e; }
+  bpp.loading = false;
+  if (!alive()) return;
+  versions.bpp++;
+  changed();
+}
+
+const due = { tick: 0, balances: 0, otherBalances: 0, history: 0, market: 0, chart: 0, labels: 0, exchanges: 0, bpp: 0 };
 
 async function refreshAll({ manual = false } = {}) {
   if (state.phase !== 'ready') return;
@@ -980,6 +1017,7 @@ async function refreshAll({ manual = false } = {}) {
   if (state.prefs.marketData && (manual || !state.market.chart)) { due.chart = now; jobs.push(loadChart()); }
   if (state.prefs.labels && !state.labelsLoaded) { due.labels = now; jobs.push(loadLabels()); }
   if (state.prefs.exchangeStatus && (manual || now - due.exchanges >= POLL_MS.exchanges)) { due.exchanges = now; loadExchangeStatus(); }
+  if (state.prefs.bpp && (manual || now - due.bpp >= POLL_MS.bpp)) { due.bpp = now; refreshBpp(); }
   state.refreshing = true;
   changed();
   await Promise.allSettled(jobs);
@@ -1015,6 +1053,7 @@ function heartbeat() {
   if (state.prefs.marketData && now - due.chart >= POLL_MS.chart) { due.chart = now; loadChart(); }
   if (state.prefs.labels && !state.labelsLoaded && now - due.labels >= 300000) { due.labels = now; loadLabels(); }
   if (state.prefs.exchangeStatus && now - due.exchanges >= POLL_MS.exchanges) { due.exchanges = now; loadExchangeStatus(); }
+  if (state.prefs.bpp && now - due.bpp >= POLL_MS.bpp) { due.bpp = now; refreshBpp(); }
 }
 
 // ── Auto-lock (encrypted mode) ──────────────────────────────────────────────

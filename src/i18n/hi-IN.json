@@ -924,7 +924,7 @@
   "A first sign, not proof: luck gets this far 1 time in 20. If it holds {rate}, it’s proven at about {calls} calls.": "पहला संकेत, सबूत नहीं: किस्मत 20 में 1 बार यहाँ तक पहुँचती है। अगर यह {rate} पर टिका रहे, तो लगभग {calls} अनुमानों पर साबित हो जाएगा।",
   "A test run so far. Official calls start at {needed} voters an hour; the most so far is {most}.": "अभी तक यह एक टेस्ट है। आधिकारिक अनुमान एक घंटे में {needed} वोटर से शुरू होते हैं; अब तक सबसे ज़्यादा {most} रहे हैं।",
   "BPP-9000 calls": "BPP-9000 के अनुमान",
-  "BPP-9000’s calls on Bitcoin’s next hour from the Jetski ANN Explorer, loaded only while you look at them (Tools → BPP-9000 calls). The explorer sees this device’s IP address.": "Jetski ANN Explorer से Bitcoin के अगले घंटे पर BPP-9000 के अनुमान, सिर्फ़ तब लोड होते हैं जब आप उन्हें देखते हैं (टूल्स → BPP-9000 के अनुमान)। एक्सप्लोरर इस डिवाइस का IP एड्रेस देखता है।",
+  "BPP-9000’s calls on Bitcoin’s next hour from the Jetski ANN Explorer, on the home screen and in Tools, refreshed every 5 minutes. The explorer sees this device’s IP address.": "Jetski ANN Explorer से Bitcoin के अगले घंटे पर BPP-9000 के अनुमान, होम स्क्रीन और टूल्स में, हर 5 मिनट में रीफ़्रेश। एक्सप्लोरर इस डिवाइस का IP एड्रेस देखता है।",
   "Bitcoin": "Bitcoin",
   "Call": "अनुमान",
   "Coin flip": "सिक्का उछालना",

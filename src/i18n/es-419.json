@@ -924,7 +924,7 @@
   "A first sign, not proof: luck gets this far 1 time in 20. If it holds {rate}, it’s proven at about {calls} calls.": "Una primera señal, no una prueba: la suerte llega hasta aquí 1 vez de cada 20. Si se mantiene en {rate}, queda comprobado hacia los {calls} pronósticos.",
   "A test run so far. Official calls start at {needed} voters an hour; the most so far is {most}.": "Por ahora es una prueba. Los pronósticos oficiales empiezan con {needed} votantes por hora; el máximo hasta ahora es {most}.",
   "BPP-9000 calls": "Pronósticos de BPP-9000",
-  "BPP-9000’s calls on Bitcoin’s next hour from the Jetski ANN Explorer, loaded only while you look at them (Tools → BPP-9000 calls). The explorer sees this device’s IP address.": "Los pronósticos de BPP-9000 sobre la próxima hora de Bitcoin, desde Jetski ANN Explorer, cargados solo mientras los miras (Herramientas → Pronósticos de BPP-9000). El explorador ve la dirección IP de este dispositivo.",
+  "BPP-9000’s calls on Bitcoin’s next hour from the Jetski ANN Explorer, on the home screen and in Tools, refreshed every 5 minutes. The explorer sees this device’s IP address.": "Los pronósticos de BPP-9000 sobre la próxima hora de Bitcoin, desde Jetski ANN Explorer, en la pantalla de inicio y en Herramientas, actualizados cada 5 minutos. El explorador ve la dirección IP de este dispositivo.",
   "Bitcoin": "Bitcoin",
   "Call": "Pronóstico",
   "Coin flip": "Cara o cruz",

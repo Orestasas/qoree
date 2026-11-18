@@ -924,7 +924,7 @@
   "A first sign, not proof: luck gets this far 1 time in 20. If it holds {rate}, it’s proven at about {calls} calls.": "初步迹象，并非证明：运气每 20 次有 1 次能达到这里。若保持在 {rate}，约 {calls} 次预测后即可证实。",
   "A test run so far. Official calls start at {needed} voters an hour; the most so far is {most}.": "目前仍是测试。每小时达到 {needed} 位投票者才开始正式预测；目前最多为 {most} 位。",
   "BPP-9000 calls": "BPP-9000 预测",
-  "BPP-9000’s calls on Bitcoin’s next hour from the Jetski ANN Explorer, loaded only while you look at them (Tools → BPP-9000 calls). The explorer sees this device’s IP address.": "来自 Jetski ANN Explorer 的 BPP-9000 比特币下一小时预测，仅在查看时加载（工具 → BPP-9000 预测）。该探索器会看到本设备的 IP 地址。",
+  "BPP-9000’s calls on Bitcoin’s next hour from the Jetski ANN Explorer, on the home screen and in Tools, refreshed every 5 minutes. The explorer sees this device’s IP address.": "来自 Jetski ANN Explorer 的 BPP-9000 比特币下一小时预测，显示在主屏幕和工具中，每 5 分钟刷新一次。该探索器会看到本设备的 IP 地址。",
   "Bitcoin": "比特币",
   "Call": "预测",
   "Coin flip": "抛硬币",

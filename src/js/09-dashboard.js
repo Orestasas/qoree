@@ -106,6 +106,7 @@ function showDashboard(opts = {}) {
       actions: h('div', { class: 'actions arrive tab-home' }),
       notices: h('div', { class: 'notices arrive-children tab-home' }),
       assets: h('section', { class: 'section arrive-children tab-home', 'aria-label': tr('Assets') }),
+      bpp: h('section', { class: 'section bpp-section arrive-children tab-home', 'aria-label': 'BPP-9000' }),
       market: h('section', { class: 'section arrive-children tab-home', 'aria-label': tr('Market') }),
       toolkit: h('section', { class: 'section arrive-children tab-tools', 'aria-label': tr('Tools') }),
       activity: h('section', { class: 'section arrive-children tab-activity', 'aria-label': tr('Activity') }),
@@ -116,7 +117,7 @@ function showDashboard(opts = {}) {
     const topbar = h('header', { class: 'topbar' }, edgeBlur('top'), h('div', { class: 'topbar-inner arrive' }, els.account, els.logo, els.head, els.tools));
     const left = h('div', { class: 'dash-left' },
       h('section', { class: 'hero arrive tab-home', 'aria-label': tr('Balance') }, els.label.el, els.value, els.sub),
-      els.actions, els.notices, els.assets, els.market, els.toolkit);
+      els.actions, els.notices, els.assets, els.bpp, els.market, els.toolkit);
     // The same frosted blur along the bottom edge, while there's more page below to scroll to.
     const floor = h('div', { class: 'page-floor', 'aria-hidden': 'true' }, edgeBlur('bottom'));
     const moreBelow = () => window.scrollY + window.innerHeight < document.documentElement.scrollHeight - 4;
@@ -198,6 +199,7 @@ function showDashboard(opts = {}) {
       renderActions(els.actions);
       renderNotices(els.notices);
       renderAssets(els.assets);
+      renderBpp(els.bpp);
       renderMarket(els.market);
       renderToolkit(els.toolkit);
       renderActivity(els.activity);

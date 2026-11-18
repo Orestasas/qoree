@@ -73,7 +73,7 @@ There's no backend. The Qubic RPC allows CORS, so the page calls it directly. Th
 | `api.gateio.ws` | Daily prices older than a year; its order book; its QUBIC deposit and withdrawal status, checked on open and every 10 minutes | Market data; Order books, off by default; Exchange status, on by default |
 | `api.mexc.com` | Its order book, only while the Order books sheet is open. Blocked in some countries | Order books, off by default |
 | `static.qubic.org` | Official contract and exchange names | Address labels, on by default |
-| `annexplorer.jetskipool.ai` | BPP-9000's calls on Bitcoin's next hour, each epoch's overview, only while its sheet is open, every 5 minutes | BPP-9000, on by default |
+| `annexplorer.jetskipool.ai` | BPP-9000's calls on Bitcoin's next hour (each epoch's overview) for the home screen and Tools, on open and every 5 minutes | BPP-9000, on by default |
 
 Every host except the RPC sees your IP address, the page's origin, your browser (User-Agent) and languages. None gets
 an address, a transaction or an amount, and no cookie or Referer is sent. Explorer links (`explorer.qubic.org`) open
