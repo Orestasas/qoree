@@ -72,21 +72,24 @@ function showWelcome(opts = {}) {
     const blocked = !canSign();
     const point = (ic, text) => h('li', null, icon(ic, 16), h('span', { text }));
     // One centred column: the logo at the top, the audit note at the bottom, everything else in the middle.
+    // The download link saves this page as served (not the live DOM), so it opens offline exactly as published.
+    const pageUrl = location.href.split(/[?#]/)[0];
     return h('main', { class: 'screen welcome' },
       h('div', { class: 'welcome-top arrive' }, brandLogo(), languageChip()),
       h('div', { class: 'welcome-hero arrive-children' },
-        h('h1', { class: 'welcome-title', tabindex: '-1' }, h('span', { text: tr('Your QUBIC,') }), h('span', { class: 'accent', text: tr('in your browser.') })),
+        h('h1', { class: 'welcome-title', tabindex: '-1' }, h('span', { text: tr('Your QUBIC,') }), h('span', { class: 'accent', text: tr('in your browser or offline.') })),
         h('p', { class: 'welcome-lead', text: tr('Keep, send and receive QUBIC. Your seed stays on this device.') }),
         h('div', { class: 'welcome-actions' },
           button(tr('Create wallet'), { onClick: () => startCreate(false), disabled: blocked, block: false }),
           button(tr('Import seed'), { kind: 'secondary', onClick: () => showImport(false), disabled: blocked, block: false }),
-          button(tr('Restore backup'), { kind: 'secondary', onClick: () => backupFilePane(openSheet({ title: tr('Restore backup') }), null, true), disabled: blocked || !secureStorageSupported(), block: false }),
-          button(tr('Watch address'), { kind: 'secondary', onClick: () => showWatch(false), block: false })),
+          button(tr('Restore backup'), { kind: 'secondary', onClick: () => backupFilePane(openSheet({ title: tr('Restore backup') }), null, true), disabled: blocked || !secureStorageSupported(), block: false })),
         h('ul', { class: 'welcome-points' },
           point('checkCircle', tr('No sign-up')), point('shield', tr('Signed on this device'))),
         selfTestBlocker(),
         trustedContext() && !secureStorageSupported() ? notice('info', 'info', tr('Encrypted storage unavailable here'), storageUnavailableReason()) : null),
-      h('p', { class: 'fine arrive', text: tr('Not independently audited yet. Keep a written backup of every seed.') }));
+      h('div', { class: 'welcome-foot arrive' },
+        h('a', { class: 'welcome-download', href: pageUrl, download: 'qoree.html' }, icon('download', 16), h('span', { text: tr('Download the app as one HTML file') })),
+        h('p', { class: 'fine', text: tr('Not independently audited yet. Keep a written backup of every seed.') })));
   }, opts);
 }
 

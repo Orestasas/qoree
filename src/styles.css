@@ -675,8 +675,8 @@ button.row:active { background: var(--bg-pressed-overlay); }
    under it), and three plain points */
 .screen.welcome { max-width: 1040px; align-items: center; text-align: center; padding-top: calc(var(--st) + 56px); padding-bottom: calc(var(--sb) + 40px); }
 .welcome-hero { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--spacing-10) 0; }
-.welcome-title { font-size: clamp(32px, 9.4vw, 112px); line-height: 0.94; font-weight: 700; letter-spacing: -0.045em; }
-.welcome-title > span { display: block; }
+.welcome-title { font-size: clamp(32px, 6.4vw, 72px); line-height: 1; font-weight: 700; letter-spacing: -0.045em; }
+.welcome-title > span { display: block; text-wrap: balance; }
 .welcome-title .accent { color: var(--text-brand); }
 .welcome-lead { margin-top: var(--spacing-8); max-width: 500px; color: var(--text-secondary); font-size: 19px; line-height: 1.5; letter-spacing: -0.01em; text-wrap: balance; }
 .welcome-actions { margin-top: var(--spacing-10); display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-3); width: 100%; max-width: 400px; }
@@ -687,6 +687,11 @@ button.row:active { background: var(--bg-pressed-overlay); }
 .welcome-points .nc-icon { width: 16px; height: 16px; color: var(--text-brand); }
 .welcome-hero > .notice { margin-top: var(--spacing-6); max-width: 480px; text-align: start; }
 .welcome .fine { font-size: 14px; line-height: 1.5; text-wrap: balance; }
+.welcome-foot { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-3); }
+.welcome-download { display: inline-flex; align-items: center; gap: var(--spacing-2); font-size: 14px; line-height: 20px; color: var(--text-secondary); }
+.welcome-download .nc-icon { width: 16px; height: 16px; }
+.welcome-download:hover { color: var(--text-primary); }
+.welcome-download:focus-visible { outline: 2px solid var(--text-brand); outline-offset: 4px; border-radius: 4px; }
 /* the language picker, in the top corner where the reading starts on its side */
 .welcome-top { position: relative; align-self: stretch; display: flex; justify-content: center; }
 .welcome-top .lang-chip { position: absolute; inset-inline-end: 0; top: 50%; margin-top: -15px; }
