@@ -996,13 +996,16 @@ button.hero-value:active { transform: scale(0.97); transition-duration: 60ms, 0m
 .bpp-dot.wrong { background: color-mix(in srgb, var(--status-error) var(--p, 100%), transparent); }
 .bpp-dot.quiet { background: color-mix(in srgb, var(--text-tertiary) 60%, transparent); }
 .bpp-dot.on { outline: 2px solid var(--text-primary); outline-offset: 1px; }
-.bpp-hint { padding-top: var(--spacing-3); border-top: 1px solid var(--border-default); font-size: 13px; line-height: 18px; color: var(--text-tertiary); }
-.bpp-hour { display: flex; flex-direction: column; gap: var(--spacing-1); padding-top: var(--spacing-3); border-top: 1px solid var(--border-default); }
-.bpp-hour-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--spacing-3); }
-.bpp-hour-when { display: flex; flex-direction: column; font-variant-numeric: tabular-nums; }
-.bpp-hour-when b { font-size: 15px; line-height: 20px; font-weight: 500; letter-spacing: -0.02em; }
-.bpp-hour-when span { font-size: 13px; line-height: 18px; color: var(--text-secondary); }
-.bpp-hour .kv-row { padding: var(--spacing-2) 0; min-height: 0; font-size: 13px; line-height: 18px; font-variant-numeric: tabular-nums; }
+.bpp-hint { font-size: 13px; line-height: 18px; color: var(--text-tertiary); }
+.bpp-dots { position: relative; }
+.bpp-tip { position: absolute; z-index: 2; width: 220px; max-width: 100%; display: flex; flex-direction: column; gap: var(--spacing-2); padding: var(--spacing-3); border-radius: var(--radius-2xl); background: var(--bg-surface); border: 1px solid var(--border-strong); box-shadow: 0 6px 20px rgb(0 0 0 / 0.18), 0 1px 3px rgb(0 0 0 / 0.1); font-size: 13px; line-height: 18px; pointer-events: none; }
+.bpp-tip-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--spacing-2); }
+.bpp-tip-when { display: flex; flex-direction: column; min-width: 0; font-variant-numeric: tabular-nums; }
+.bpp-tip-when b { font-weight: 500; letter-spacing: -0.02em; }
+.bpp-tip-when span { font-size: 12px; line-height: 16px; color: var(--text-secondary); }
+.bpp-tip dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 2px var(--spacing-3); font-variant-numeric: tabular-nums; }
+.bpp-tip dt { color: var(--text-secondary); }
+.bpp-tip dd { margin: 0; text-align: end; }
 .bpp-key { display: flex; flex-direction: column; gap: var(--spacing-3); font-size: 15px; line-height: 20px; color: var(--text-secondary); }
 .bpp-key-row { display: flex; align-items: flex-start; gap: var(--spacing-3); }
 .bpp-key-row b { font-weight: 500; color: var(--text-primary); }

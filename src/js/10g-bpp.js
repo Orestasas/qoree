@@ -1,10 +1,10 @@
 // ═══════════════════════════════════════════════════════════════════════════
-// 11g. BPP-9000 (opt-in)
+// 11g. BPP-9000
 // ═══════════════════════════════════════════════════════════════════════════
 // Qubic's computors run BPP-9000, a network that calls Bitcoin's next hour, up or down; the side with more votes is
 // the call. Guessing gets 50%, so the score means something only once it holds far from 50% over many calls. One dot
-// per hour, by day or by epoch, and a tap on a dot shows its votes. From the Jetski ANN Explorer, loaded only once
-// turned on (the explorer sees this device's IP address, nothing else) and only while the sheet is open: on open, then
+// per hour, by day or by epoch, and a tap on a dot shows its votes. From the Jetski ANN Explorer (it sees this
+// device's IP address, nothing else), on unless turned off in Settings, and loaded only while the sheet is open: on open, then
 // every 5 minutes, paused while the tab is hidden. Kept in memory for this visit; a finished epoch isn't asked again.
 const BPP_REFRESH_MS = 5 * 60 * 1000;
 const bpp = { epochs: new Map(), latest: 0, needed: 100, agree: 55, at: 0 };
@@ -150,8 +150,30 @@ function openBpp() {
       h('p', { class: 'bpp-why', text: bppExplain(s) }));
   };
 
-  // A dot grid: a day is 2 rows of 12 hours, an epoch one row of 24 a day. Tap or drag across it to look at an hour;
-  // with the keyboard, the arrow keys move along it.
+  // The hour a dot stands for, as the card over it shows it: its time, result, call, voters and the score up to it.
+  const tipContent = (r, i) => {
+    const [kind, label] = bppResult(r);
+    const s = bppScore(rows, i);
+    const line = (k, v) => [h('dt', { text: k }), h('dd', { text: v })];
+    return [
+      h('div', { class: 'bpp-tip-head' },
+        h('div', { class: 'bpp-tip-when' },
+          h('b', { text: tr('{from} to {to}', { from: fmtTime(r.opened), to: fmtTime(r.t * 1000) }) }),
+          h('span', { text: fmtDay(r.opened) })),
+        badge(label, kind)),
+      h('dl', null,
+        line(tr('Call'), r.call === 1 ? tr('Up') : r.call === 0 ? tr('Down') : r.voters ? tr('Split') : tr('None')),
+        line(tr('Voters'), tr('{voters} of {needed}', { voters: fmtInt(r.voters), needed: fmtInt(bpp.needed) })),
+        r.voters ? line(tr('Votes'), r.unsure ? tr('{up} up, {down} down, {unsure} not sure', { up: fmtInt(r.up), down: fmtInt(r.down), unsure: fmtInt(r.unsure) })
+          : tr('{up} up, {down} down', { up: fmtInt(r.up), down: fmtInt(r.down) })) : null,
+        r.went !== null ? line(tr('Bitcoin'), r.went ? tr('Up') : tr('Down')) : null,
+        line(tr('Score so far'), tr('{right} of {count}', { right: fmtInt(s.right), count: fmtInt(s.n) }))),
+    ];
+  };
+
+  // A dot grid: a day is 2 rows of 12 hours, an epoch one row of 24 a day. Point at a dot (or tap it, or drag across
+  // the grid) and a card over it shows that hour; with the keyboard, the arrow keys move along it. The card follows
+  // the pointer without redrawing the sheet.
   const grid = (list, current) => {
     const isDay = mode === 'day';
     const cells = new Map();
@@ -165,56 +187,60 @@ function openBpp() {
     for (let c = 0; c < total; c++) {
       const i = cells.get(c);
       const r = i === undefined ? null : rows[i];
-      const dot = h('span', { class: ['bpp-dot', r && bppDotKind(r), i === picked && 'on'] });
+      const dot = h('span', { class: ['bpp-dot', r && bppDotKind(r)] });
       if (r) { dot.dataset.i = String(i); dot.style.setProperty('--p', bppStrength(r.voters)); }
       dots.push(dot);
     }
     const order = [...cells.values()].sort((a, b) => a - b);
     const el = h('div', { class: ['bpp-grid', isDay && 'day'], tabindex: '0', role: 'group',
       'aria-label': tr('One dot per hour. Use the arrow keys to look at each hour.') }, dots);
-    const pickAt = (x, y) => {
+    const tip = h('div', { class: 'bpp-tip', role: 'status' });
+    tip.hidden = true;
+    const wrap = h('div', { class: 'bpp-dots' }, el, tip);
+    const hide = () => {
+      picked = -1;
+      tip.hidden = true;
+      for (const d of el.querySelectorAll('.bpp-dot.on')) d.classList.remove('on');
+    };
+    const show = (i) => {
+      const dot = el.querySelector(`[data-i="${i}"]`);
+      if (!dot) { hide(); return; }
+      for (const d of el.querySelectorAll('.bpp-dot.on')) d.classList.remove('on');
+      dot.classList.add('on');
+      picked = i;
+      fill(tip, ...tipContent(rows[i], i));
+      tip.hidden = false;
+      // Over the dot, inside the grid's width; under it when there's no room above.
+      const box = wrap.getBoundingClientRect(); const d = dot.getBoundingClientRect();
+      const left = Math.max(0, Math.min(box.width - tip.offsetWidth, d.left - box.left + d.width / 2 - tip.offsetWidth / 2));
+      const above = d.top - tip.offsetHeight - 8 >= 0;
+      tip.style.left = `${left}px`;
+      tip.style.top = `${above ? d.top - box.top - tip.offsetHeight - 8 : d.bottom - box.top + 8}px`;
+    };
+    const pickAt = (e) => {
       let best = null; let dist = 24 * 24;
       for (const d of el.querySelectorAll('[data-i]')) {
-        const b = d.getBoundingClientRect(); const dx = b.left + b.width / 2 - x; const dy = b.top + b.height / 2 - y;
+        const b = d.getBoundingClientRect(); const dx = b.left + b.width / 2 - e.clientX; const dy = b.top + b.height / 2 - e.clientY;
         if (dx * dx + dy * dy < dist) { dist = dx * dx + dy * dy; best = d; }
       }
-      if (best && Number(best.dataset.i) !== picked) { picked = Number(best.dataset.i); paint(); }
+      if (best) { if (Number(best.dataset.i) !== picked || tip.hidden) show(Number(best.dataset.i)); } else if (e.pointerType === 'mouse') hide();
     };
-    el.addEventListener('pointerdown', (e) => pickAt(e.clientX, e.clientY));
-    el.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse' || e.buttons) pickAt(e.clientX, e.clientY); });
+    el.addEventListener('pointerdown', pickAt);
+    el.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse' || e.buttons) pickAt(e); });
+    el.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse' && document.activeElement !== el) hide(); });
+    // A tap elsewhere takes the focus away, and the card with it.
+    el.addEventListener('blur', hide);
     el.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !tip.hidden) { e.preventDefault(); e.stopPropagation(); hide(); return; }
       const step = { ArrowRight: 1, ArrowDown: isDay ? 12 : 24, ArrowLeft: -1, ArrowUp: isDay ? -12 : -24 }[e.key];
       if (!step || !order.length) return;
       e.preventDefault();
       const at = order.indexOf(picked);
-      const to = at < 0 ? (step > 0 ? 0 : order.length - 1) : Math.max(0, Math.min(order.length - 1, at + step));
-      picked = order[to];
-      paint();
-      holder.querySelector('.bpp-grid')?.focus();
+      show(order[at < 0 ? (step > 0 ? 0 : order.length - 1) : Math.max(0, Math.min(order.length - 1, at + step))]);
     });
-    return el;
-  };
-
-  // The hour looked at: its time, result, call, voters and the score up to it.
-  const hourCard = () => {
-    const r = rows[picked];
-    if (!r) return h('p', { class: 'bpp-hint', text: tr('Tap a dot to see that hour’s votes.') });
-    const [kind, label] = bppResult(r);
-    const s = bppScore(rows, picked);
-    return h('div', { class: 'bpp-hour', role: 'status' },
-      h('div', { class: 'bpp-hour-head' },
-        h('div', { class: 'bpp-hour-when' },
-          h('b', { text: tr('{from} to {to}', { from: fmtTime(r.opened), to: fmtTime(r.t * 1000) }) }),
-          h('span', { text: fmtDay(r.opened) })),
-        badge(label, kind)),
-      kv([
-        [tr('Call'), r.call === 1 ? tr('Up') : r.call === 0 ? tr('Down') : r.voters ? tr('Split') : tr('None')],
-        [tr('Voters'), tr('{voters} of {needed}', { voters: fmtInt(r.voters), needed: fmtInt(bpp.needed) })],
-        r.voters ? [tr('Votes'), r.unsure ? tr('{up} up, {down} down, {unsure} not sure', { up: fmtInt(r.up), down: fmtInt(r.down), unsure: fmtInt(r.unsure) })
-          : tr('{up} up, {down} down', { up: fmtInt(r.up), down: fmtInt(r.down) })] : null,
-        r.went !== null ? [tr('Bitcoin'), r.went ? tr('Up') : tr('Down')] : null,
-        [tr('Score so far'), tr('{right} of {count}', { right: fmtInt(s.right), count: fmtInt(s.n) })],
-      ]));
+    // Redrawn with a new hour while one was looked at: put its card back once the grid is on screen.
+    if (picked >= 0) { const keep = picked; requestAnimationFrame(() => { if (wrap.isConnected) show(keep); }); }
+    return wrap;
   };
 
   const dotsCard = () => {
@@ -231,7 +257,7 @@ function openBpp() {
           step('back', tr('Earlier'), 1, back >= list.length - 1),
           step('chevronRight', tr('Later'), -1, back <= 0))),
       grid(list, current),
-      hourCard());
+      h('p', { class: 'bpp-hint', text: tr('Tap a dot to see that hour’s votes.') }));
   };
 
   const legend = () => h('div', { class: 'bpp-key' },

@@ -482,7 +482,7 @@ async function fetchExchangeStatus(id) {
   return src.parse(await request(src.url, { retries: 1, timeout: 8000 }));
 }
 
-// ── BPP-9000 calls (opt-in) ─────────────────────────────────────────────────
+// ── BPP-9000 calls ────────────────────────────────────────────────────────────
 // The newest epoch the explorer knows, and one epoch's closed hours since go-live: the votes up, down and not sure,
 // the explorer's status (correct, incorrect, no consensus, or not scored while it's a test), and what Bitcoin did
 // (1 up, 0 down, null not known yet). Also the bar for an official call: how many voters, and what share on one side.

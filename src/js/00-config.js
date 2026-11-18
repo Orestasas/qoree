@@ -41,7 +41,7 @@ const MARKET_API = {
 };
 const GATE_FROM = 1714521600;   // 2024-05-01 00:00 UTC; Gate.io's first QUBIC/USDT candle is 2024-05-09
 const GATE_WINDOW_DAYS = 900;   // Gate.io returns at most 1,000 candles per request
-// BPP-9000's calls on Bitcoin's next hour (opt-in, Tools): each epoch's overview from the Jetski ANN Explorer. The
+// BPP-9000's calls on Bitcoin's next hour (Tools): each epoch's overview from the Jetski ANN Explorer. The
 // network went live in epoch 240; its first hour closed at 13:00 UTC on 18 November 2026.
 const BPP_API = {
   epochs: 'https://annexplorer.jetskipool.ai/api/v1/epochs',
@@ -117,7 +117,7 @@ const DEFAULT_PREFS = Object.freeze({
   marketData: true,       // CoinGecko price, 24h change and chart, and Gate.io's older daily prices
   labels: true,           // official static address labels
   orderBooks: false,      // QUBIC/USDT order books from Gate.io and MEXC (they'd see this device's IP address)
-  bpp: false,             // BPP-9000's Bitcoin calls from the Jetski ANN Explorer (it'd see this device's IP address)
+  bpp: true,              // BPP-9000's Bitcoin calls from the Jetski ANN Explorer, only while its sheet is open (it sees the IP address)
   exchangeStatus: true,   // whether Gate.io has paused QUBIC deposits or withdrawals (it sees the IP address too)
   tickOffset: 10,         // qubic/wallet default; wallet-app offers 5/10/20/40
   autoLockMinutes: 10,    // encrypted mode only
